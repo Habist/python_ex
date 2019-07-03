@@ -13,4 +13,4 @@ title_list = title.find_all(class_="hdline_article_tit")
 
 for title_html in title_list:
     if title_html.a.get("href") != "":
-        print(title_html.get_text())
+        print(title_html.get_text().strip())
