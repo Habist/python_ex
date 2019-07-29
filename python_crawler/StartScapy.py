@@ -14,7 +14,7 @@ from scapy.config import *
 idx = 0
 
 def sniffing(filter):
-    sniff(prn=showPacket, count=1)
+    sniff(prn=showPacket, count=20)
 
 def showPacket(packet):
     global idx

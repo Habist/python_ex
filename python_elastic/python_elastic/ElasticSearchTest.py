@@ -1,9 +1,11 @@
 from elasticsearch import Elasticsearch
 
+#Elastic Setting
 es = Elasticsearch(
     ['192.168.35.202']
 )
 
+#인덱스 생성
 # es.indices.create(index='test_create',
 #                   body={
 #                           "settings": {
@@ -18,6 +20,8 @@ es = Elasticsearch(
 #                           }
 #                         })
 
-
-# es.index(index='test_create',
-#          body=)
+#데이터 삽입
+es.index(index='test_create',
+         body={
+  "field1":"33333"
+})
