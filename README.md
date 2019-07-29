@@ -1,3 +1,3 @@
-# python_chapter01
+# python_example
 
-기초 크롤링, 스크래핑 연습!
+크롤링, 스크래핑, 인공 신경망(딥러닝) 연습
