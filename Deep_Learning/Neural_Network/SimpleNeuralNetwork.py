@@ -6,6 +6,16 @@ import ActivationFunction as AF
 def identity_function(x):
     return x
 
+#소프트맥스 함수
+def softmax(x):
+    # 로그 성질을 이용해 자연상수 e의 지수에 C를 빼도 같은 결과가 나옴
+    c = np.max(x) # 오버플로우 방지를 위해 상수 C를 설정
+    exp = np.exp(x - c)
+    sum_exp = np.sum(exp)
+    y = exp / sum_exp
+    return y
+
+
 # 3층 신경망 구현(입력층 : 3개, 1층 : 4개, 2층: 3개, 출력층 : 2개)===================================================================
 
 def init_network():
