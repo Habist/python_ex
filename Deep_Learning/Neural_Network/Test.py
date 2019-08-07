@@ -1,75 +1,68 @@
-import sys, os
-sys.path.append(os.pardir) # 부모 디렉터리의 파일을 가져올 수 있도록 설정
-import time
 import numpy as np
-from PIL import Image
-from dataset.mnist import load_mnist, init_network
-from SimpleNeuralNetwork import predict
+import matplotlib.pylab as plt
+from mpl_toolkits.mplot3d import Axes3D
 
-def image_show(img):
-    pil_image = Image.fromarray(np.uint8(img))
-    pil_image.show()
 
-def get_data():
-    (x_train, t_train), (x_test, t_test) = \
-        load_mnist(normalize=True, one_hot_label=True)  # 정규화 전처리 True
-        # load_mnist(flatten=True, normalize=True, one_hot_label=False) #정규화 전처리 True
-    return x_test, t_test
+def _numerical_gradient_no_batch(f, x):
+    h = 1e-4  # 0.0001
+    grad = np.zeros_like(x)
 
-def do(): # 배치처리 x   --> 배치처리 했을때와 평균 0.45초 차이남
-    x, t = get_data()
-    network = init_network()
+    for idx in range(x.size):
+        tmp_val = x[idx]
+        x[idx] = float(tmp_val) + h
+        fxh1 = f(x)  # f(x+h)
 
-    accuracy_cnt = 0
-    # wrong_idx = []
-    for i in range(len(x)):
-        y = predict(network, x[i])
-        p = np.argmax(y) # 확률이 가장 높은 인덱스 저장
-        # print(p, t[i], i)
-        print(t[i])
-        if p == t[i]:
-            accuracy_cnt += 1
-        # else:
-        #     wrong_idx.append(i)
-    print("Accuracy:  " + str(float(accuracy_cnt) / len(x))) # 정규화 o : 93.52 , 정규화 x : 92.07
-    # print(wrong_idx)
+        x[idx] = tmp_val - h
+        fxh2 = f(x)  # f(x-h)
+        grad[idx] = (fxh1 - fxh2) / (2 * h)
 
-    # idx = 92
-    # print(t[idx])
-    # print(np.argmax(predict(network,x[idx])))
-    # img = x[idx].reshape(28, 28)
-    # image_show(img)
+        x[idx] = tmp_val  # 値を元に戻す
 
-def do_batch():
-    x, t = get_data()
-    network = init_network()
-    batch_size = 1000
-    accuracy_cnt = 0
+    return grad
 
-    for i in range(0, len(x), batch_size):
-        x_batch = x[i: i + batch_size]
-        y_batch = predict(network, x_batch)
-        p = np.argmax(y_batch, axis=1)
-        accuracy_cnt += np.sum(p == t[i: i + batch_size])
 
-    print("Accuracy:  " + str(float(accuracy_cnt) / len(x))) # 정규화 o : 93.52 , 정규화 x : 92.07
+def numerical_gradient(f, X):
+    if X.ndim == 1:
+        return _numerical_gradient_no_batch(f, X)
+    else:
+        grad = np.zeros_like(X)
 
-# networ1k = init_network()
-#
-# W1, W2, W3 = networ1k['W1'], networ1k['W2'], networ1k['W3']
-# b1, b2, b3 = networ1k['b1'], networ1k['b2'], networ1k['b3']
-#
-# print(networ1k.keys())
-# print(networ1k)
-current_milli_time = lambda: int(round(time.time() * 1000))
+        for idx, x in enumerate(X):
+            grad[idx] = _numerical_gradient_no_batch(f, x)
 
-start = current_milli_time()
-do_batch()
-end = current_milli_time()
-print(end - start)
+        return grad
 
-start = current_milli_time()
-do()
-end = current_milli_time()
-print(end - start)
 
+def function_2(x):
+    if x.ndim == 1:
+        return np.sum(x ** 2)
+    else:
+        return np.sum(x ** 2, axis=1)
+
+
+def tangent_line(f, x):
+    d = numerical_gradient(f, x)
+    print(d)
+    y = f(x) - d * x
+    return lambda t: d * t + y
+
+
+if __name__ == '__main__':
+    x0 = np.arange(-2, 2.5, 0.25)
+    x1 = np.arange(-2, 2.5, 0.25)
+    X, Y = np.meshgrid(x0, x1)
+
+    X = X.flatten()
+    Y = Y.flatten()
+
+    grad = numerical_gradient(function_2, np.array([X, Y]).T).T
+
+    plt.figure()
+    plt.quiver(X, Y, -grad[0], -grad[1], angles="xy", color="#666666")
+    plt.xlim([-2, 2])
+    plt.ylim([-2, 2])
+    plt.xlabel('x0')
+    plt.ylabel('x1')
+    plt.grid()
+    plt.draw()
+    plt.show()

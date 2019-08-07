@@ -118,5 +118,6 @@ def init_network():
 
     return network
 
+
 if __name__ == '__main__':
     init_mnist()
