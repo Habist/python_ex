@@ -22,8 +22,9 @@ def function_1(x):
 
 
 def function_2(x):
-    return x[0]**2 + x[1]**2 
-    # 또는 return np.sum(x**2)
+    return x[0]**2 + x[1]**2
+    # return np.sum(x**2)
+
 
 def linear(a, b, x):
     return a * x + b
@@ -43,9 +44,42 @@ def make_gradient(f, x, x_range):
     plt.show()
 
 
+def numerical_gradient(f,x):
+    h = 1e-4
+    grad = np.zeros_like(x)
+
+    for idx in range(x.size):
+        tmp_val = x[idx]        # 미분을 하는 x값만 차분을 이용하기 위해 임시 저장
+        x[idx] = tmp_val + h    # 미분을 위해 기존의 값에 + h 후 다시 저장
+        fxh1 = f(x)             # 현재 인덱스의 x값에서 미분을 하기 때문에 차분할 값이 함께 있는 x 어레이를 인자로 넣음
+
+        x[idx] = tmp_val - h    # 똑같이 차분을 위한 과정
+        fxh2 = f(x)
+
+        grad[idx] = (fxh1 - fxh2) / (2*h)    # 중앙차분 공식
+        x[idx] = tmp_val                     # 기존 x값 원복
+
+    return grad
+
+
+def gradient_descent(f, init_x, lr=0.01, step_num=100):
+    x = init_x      # 시작 x값 설정
+
+    for i in range(step_num):           # step_num 만큼 학습 진행
+        grad = numerical_gradient(f,x)  # x에서의 기울기를 구하고
+        x -= lr * grad                  # 기존 x를 학습률과 기울기를 곱한 값을 뺀다. 그러면 기울기가 0으로 수렴
+
+    return x                        # 결국 함수의 최솟값으로 간다.(함수의 출력값이 가장 작은 곳이 최솟값 부근이기 때문)
+
+
+print(gradient_descent(function_2, np.array([-3.0, 4.0]), lr=0.1, step_num=100))
+
+
 # make_gradient(function_1, 20, np.arange(0.0, 20.0, 0.1)) # function_1 함수의 x = 20인 값에서 접선을 그리기
-x0, x1 = np.arange(-3,3,1)
-y = function_2([x0, x1])
-plt.plot([x0, x1] ,y)
-plt.show()
+# x0, x1 = np.arange(-3,3,1)
+# y = function_2([x0, x1])
+# plt.plot([x0, x1] ,y)
+# plt.show()
+
+
 
