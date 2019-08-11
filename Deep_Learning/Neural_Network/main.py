@@ -5,6 +5,7 @@ import numpy as np
 from PIL import Image
 from dataset.mnist import load_mnist, init_network
 from SimpleNeuralNetwork import predict
+from TwoLayerNet import TwoLayerNet
 
 def image_show(img):
     pil_image = Image.fromarray(np.uint8(img))
@@ -14,7 +15,7 @@ def get_data():
     (x_train, t_train), (x_test, t_test) = \
         load_mnist(normalize=True, one_hot_label=True)  # 정규화 전처리 True
         # load_mnist(flatten=True, normalize=True, one_hot_label=False) #정규화 전처리 True
-    return x_test, t_test
+    return (x_train, t_train), (x_test, t_test)
 
 def do(): # 배치처리 x   --> 배치처리 했을때와 평균 0.45초 차이남
     x, t = get_data()
@@ -54,22 +55,56 @@ def do_batch():
 
     print("Accuracy:  " + str(float(accuracy_cnt) / len(x))) # 정규화 o : 93.52 , 정규화 x : 92.07
 
-# networ1k = init_network()
-#
-# W1, W2, W3 = networ1k['W1'], networ1k['W2'], networ1k['W3']
-# b1, b2, b3 = networ1k['b1'], networ1k['b2'], networ1k['b3']
-#
-# print(networ1k.keys())
-# print(networ1k)
-current_milli_time = lambda: int(round(time.time() * 1000))
 
-start = current_milli_time()
-do_batch()
-end = current_milli_time()
-print(end - start)
+# current_milli_time = lambda: int(round(time.time() * 1000))
+#
+# start = current_milli_time()
+# do_batch()
+# end = current_milli_time()
+# print(end - start)
+#
+# start = current_milli_time()
+# do()
+# end = current_milli_time()
+# print(end - start)
 
-start = current_milli_time()
-do()
-end = current_milli_time()
-print(end - start)
+
+
+# 학습 데이터 로드
+(x_train, t_train), (x_test, t_test) = get_data()
+
+train_loss_list = []
+train_acc_list = []
+test_acc_list = []
+
+
+iters_num = 10000   # 반복 횟수
+train_size = x_train.shape[0]
+batch_size = 100
+learning_rate = 0.1
+network = TwoLayerNet(input_size=784, hidden_size=50, output_size=10)
+
+iter_per_epoch = max(train_size / batch_size, 1)
+
+# 학습 시작
+for i in range(iters_num):
+    batch_mask = np.random.choice(train_size, batch_size)   # 어레이 인덱스를 범위 내에서 무작위로 생성
+    x_batch = x_train[batch_mask]
+    t_batch = t_train[batch_mask]
+    grad = network.numerical_gradient(x_batch, t_batch)     # 신경망의 손실함수에 대한 weight, bias 미분값을 구함
+    for key in ('W1', 'b1', 'W2', 'b2'):
+        network.params[key] -= learning_rate * grad[key]    # 미분값을 학습률과 곱하여 기존값에서 빼는 방식으로 갱신
+
+
+    loss = network.loss(x_batch, t_batch)
+    train_loss_list.append(loss)
+
+    if i % iter_per_epoch == 0:
+        train_acc = network.accuracy(x_train, t_train)
+        test_acc = network.accuracy(x_test, t_test)
+        train_acc_list.append(train_acc)
+        test_acc_list.append(test_acc)
+        print("train acc, test acc | " + str(train_acc) + ", " + str(test_acc))
+
+
 

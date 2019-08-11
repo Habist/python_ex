@@ -1,5 +1,4 @@
 import sys, os
-
 sys.path.append(os.pardir)
 import numpy as np
 from dataset.mnist import load_mnist, init_network
@@ -20,11 +19,11 @@ def cross_entropy_error_batch(y, t):
         y = y.reshape(1, y.size)
 
     batch_size = y.shape[0]
-    # return -np.sum(t * np.log(y + 1e-7)) / batch_size # one-hot
-    return -np.sum(np.log(y[np.arange(batch_size), t] + 1e-7)) / batch_size  # not one-hot
+    return -np.sum(t * np.log(y + 1e-7)) / batch_size # one-hot
+    # return -np.sum(np.log(y[np.arange(batch_size), t] + 1e-7)) / batch_size  # not one-hot
 
 
-y = np.array([[0.1, 0.7, 0.1, 0.1], [0.7, 0.1, 0.1, 0.1], [0.1, 0.1, 0.7, 0.1], [0.1, 0.1, 0.1, 0.7]])
-t = np.array([0, 2, 3, 2])
-res = cross_entropy_error_batch(y, t)
-print(res)
+# y = np.array([[0.1, 0.7, 0.1, 0.1], [0.7, 0.1, 0.1, 0.1], [0.1, 0.1, 0.7, 0.1], [0.1, 0.1, 0.1, 0.7]])
+# t = np.array([0, 2, 3, 2])
+# res = cross_entropy_error_batch(y, t)
+# print(res)
