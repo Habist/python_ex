@@ -69,7 +69,7 @@ def do_batch():
 # print(end - start)
 
 
-
+### ==================================신경망 학습 구현==========================================================
 # 학습 데이터 로드
 (x_train, t_train), (x_test, t_test) = get_data()
 
@@ -81,7 +81,7 @@ test_acc_list = []
 iters_num = 10000   # 반복 횟수
 train_size = x_train.shape[0]
 batch_size = 100
-learning_rate = 0.1
+learning_rate = 0.01
 network = TwoLayerNet(input_size=784, hidden_size=50, output_size=10)
 
 iter_per_epoch = max(train_size / batch_size, 1)
@@ -91,7 +91,9 @@ for i in range(iters_num):
     batch_mask = np.random.choice(train_size, batch_size)   # 어레이 인덱스를 범위 내에서 무작위로 생성
     x_batch = x_train[batch_mask]
     t_batch = t_train[batch_mask]
-    grad = network.numerical_gradient(x_batch, t_batch)     # 신경망의 손실함수에 대한 weight, bias 미분값을 구함
+    # print(i)
+    # grad = network.numerical_gradient(x_batch, t_batch)     # 수치미분을 사용해 신경망의 손실함수에 대한 weight, bias 미분값을 구함
+    grad = network.gradient(x_batch, t_batch)               # 오차역전파를 사용해 매개변수 구함
     for key in ('W1', 'b1', 'W2', 'b2'):
         network.params[key] -= learning_rate * grad[key]    # 미분값을 학습률과 곱하여 기존값에서 빼는 방식으로 갱신
 
