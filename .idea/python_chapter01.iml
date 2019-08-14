@@ -11,6 +11,7 @@
       <sourceFolder url="file://$MODULE_DIR$/python_elastic/python_elastic" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Deep_Learning/dataset" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Deep_Learning/Tensorflow" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Deep_Learning/Neural_Network/Optimization" isTestSource="false" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.6 (python_chapter01)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
