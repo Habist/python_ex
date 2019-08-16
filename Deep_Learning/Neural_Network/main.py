@@ -105,9 +105,11 @@ batch_size = 100
 learning_rate = 0.01
 network = TwoLayerNet(input_size=784, hidden_size=50, output_size=10)
 # optimizer = SGD(lr=0.1)   # 확률적 경사 하강법(SGD) Default Learning rate = 0.01
-# optimizer = Momentum()      # 모멘텀 // 기울기 방향으로 힘을 받아 물체가 가속된다는 물리 법칙
-optimizer = AdaGrad()         # AdaGrad // 과거의 기울기를 제곱하여 더해감 -> 갱신 강도 감소
+# optimizer = Momentum()    # 모멘텀 // 기울기 방향으로 힘을 받아 물체가 가속된다는 물리 법칙
+# optimizer = AdaGrad()     # AdaGrad // 과거의 기울기를 제곱하여 더해감 -> 갱신 강도 감소
+optimizer = Adam()        # Adam // 모멘토와 AdaGrad를 융합한듯한 방법 원논문 참고
 iter_per_epoch = max(train_size / batch_size, 1)
+
 
 
 # 학습 시작
