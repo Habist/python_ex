@@ -7,6 +7,7 @@ from dataset.mnist import load_mnist, init_network
 from SimpleNeuralNetwork import predict
 from TwoLayerNet import TwoLayerNet
 from Optimization import *
+from MultiLayerNet import MultiLayerNet
 
 
 def image_show(img):
@@ -94,6 +95,10 @@ def gradient_check():
 # 학습 데이터 로드
 (x_train, t_train), (x_test, t_test) = get_data()
 
+# 오버피팅 강제로 재현 // 적은 수의 데이터로 학습을 진행 -> 범용성 떨어짐 -> 오버피팅 발생
+# x_train = x_train[:300]
+# t_train = t_train[:300]
+
 train_loss_list = []
 train_acc_list = []
 test_acc_list = []
@@ -103,11 +108,15 @@ iters_num = 10000   # 반복 횟수
 train_size = x_train.shape[0]
 batch_size = 100
 learning_rate = 0.01
-network = TwoLayerNet(input_size=784, hidden_size=50, output_size=10)
-# optimizer = SGD(lr=0.1)   # 확률적 경사 하강법(SGD) Default Learning rate = 0.01
+
+# network = TwoLayerNet(input_size=784, hidden_size=50, output_size=10)  # 2계층 신경망
+network = MultiLayerNet(784, 10, hidden_size_list=[200, 100, 50, 100, 50])  # 다계층 신경망 // Hidden layer 동적 할당
+
+optimizer = SGD(lr=0.01)   # 확률적 경사 하강법(SGD) Default Learning rate = 0.01
 # optimizer = Momentum()    # 모멘텀 // 기울기 방향으로 힘을 받아 물체가 가속된다는 물리 법칙
 # optimizer = AdaGrad()     # AdaGrad // 과거의 기울기를 제곱하여 더해감 -> 갱신 강도 감소
-optimizer = Adam()        # Adam // 모멘토와 AdaGrad를 융합한듯한 방법 원논문 참고
+# optimizer = Adam()        # Adam // 모멘토와 AdaGrad를 융합한듯한 방법 원논문 참고
+
 iter_per_epoch = max(train_size / batch_size, 1)
 
 
