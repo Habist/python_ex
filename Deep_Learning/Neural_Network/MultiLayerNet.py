@@ -11,13 +11,16 @@ from collections import OrderedDict
 
 class MultiLayerNet:
     def __init__(self, input_size, output_size,
-                 hidden_size_list = [100, 100, 100], use_dropout = False):
+                 hidden_size_list = [100, 100, 100], use_batchNorm = False,
+                 use_dropout = False, dropout_ratio = 0.5):
         # 지역변수 초기화
         self.input_size = input_size
         self.output_size = output_size
         self.hidden_size_list = hidden_size_list
         self.hidden_length = len(hidden_size_list)
+        self.use_batchNorm = use_batchNorm
         self.use_dropout = use_dropout
+        self.dropout_ratio = dropout_ratio
         self.size_list = []
         self.layers = OrderedDict()
         self.params = {}
@@ -31,18 +34,27 @@ class MultiLayerNet:
         # 계층 및 매개변수 생성
         for idx in range(self.size_list_length):
             if idx != self.size_list_length - 1:    # 마지막 계층을 제외하고 생성
-                W = np.random.randn(self.size_list[idx], self.size_list[idx+1]) / np.sqrt(self.size_list[idx])
+                # W = np.random.randn(self.size_list[idx], self.size_list[idx+1]) / np.sqrt(self.size_list[idx])
+                W = np.random.randn(self.size_list[idx], self.size_list[idx + 1]) * 0.01
                 b = np.zeros(self.size_list[idx+1])
 
                 self.params['W' + str(idx+1)] = W
                 self.params['b' + str(idx+1)] = b
                 self.layers['Affine' + str(idx+1)] = Affine(W, b)
 
-                if idx != self.size_list_length - 2:    # hidden_layer의 마지막 활성화 함수는 생성할 필요 없음
+                if idx != self.size_list_length - 2:    # hidden_layer의 마지막 활성화, 배치 정규화는 생성할 필요 없음
+                    if self.use_batchNorm:
+                        self.params['gamma' + str(idx+1)] = np.ones(self.hidden_size_list[idx])
+                        self.params['beta' + str(idx+1)] = np.zeros(self.hidden_size_list[idx])
+                        self.layers['BatchNorm' + str(idx+1)] = BatchNormalization(self.params['gamma' + str(idx+1)],
+                                                                                   self.params['beta' + str(idx+1)])
                     self.layers['Relu' + str(idx+1)] = Relu()
+
+                if self.use_dropout:
+                    self.layers['Dropout' + str(idx+1)] = DropOut(dropout_ratio=self.dropout_ratio)
+
             else:
                 self.lastLayer = SoftmaxWithLoss() # 마지막 계층 생성
-
 
     def predict(self,x):
         for layer in self.layers.values():
@@ -104,6 +116,10 @@ class MultiLayerNet:
             if key[:-1] == "Affine":    # Affine 신경망의 매개변수 저장
                 grads['W' + idx] = self.layers[key].dW
                 grads['b' + idx] = self.layers[key].db
+
+            elif key[:-1] == "BatchNorm":    # BatchNorm 신경망의 매개변수 저장
+                grads['gamma' + idx] = self.layers[key].dgamma
+                grads['beta' + idx] = self.layers[key].dbeta
 
         # grads['W1'] = self.layers['Affine1'].dW
         # grads['b1'] = self.layers['Affine1'].db
