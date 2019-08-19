@@ -15,11 +15,37 @@ def image_show(img):
     pil_image.show()
 
 
+def shuffle_dataset(x, t):
+
+    permutation = np.random.permutation(x.shape[0])    # 인자만큼의 인덱스를 무작위로 반환
+    x = x[permutation,:] if x.ndim == 2 else x[permutation,:,:,:]
+    t = t[permutation]
+
+    return x, t
+
+
 def get_data():
     (x_train, t_train), (x_test, t_test) = \
         load_mnist(normalize=True, one_hot_label=True)  # 정규화 전처리 True
         # load_mnist(flatten=True, normalize=True, one_hot_label=False) #정규화 전처리 True
     return (x_train, t_train), (x_test, t_test)
+
+
+def get_data_with_validation():
+    (x_train, t_train), (x_test, t_test) = \
+        load_mnist(normalize=True, one_hot_label=True)
+    x_train, t_train = shuffle_dataset(x_train, t_train)
+
+    # 20%를 검증 데이터로 분할
+    validation_rate = 0.20
+    validation_num = int(x_train.shape[0] * validation_rate)
+
+    x_val = x_train[:validation_num]
+    t_val = t_train[:validation_num]
+    x_train = x_train[validation_num:]
+    t_train = t_train[validation_num:]
+
+    return (x_train, t_train), (x_test, t_test), (x_val, t_val)
 
 
 def do(): # 배치처리 x   --> 배치처리 했을때와 평균 0.45초 차이남
@@ -145,6 +171,6 @@ def train():
             print("train acc, test acc | " + str(train_acc) + ", " + str(test_acc))
 
 
-train()
-
+# train()
+get_data()
 # do()
