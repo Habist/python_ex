@@ -131,13 +131,13 @@ def train():
     test_acc_list = []
 
 
-    iters_num = 10000   # 반복 횟수
+    iters_num = 3000   # 반복 횟수
     train_size = x_train.shape[0]
     batch_size = 100
     learning_rate = 0.01
 
     # network = TwoLayerNet(input_size=784, hidden_size=50, output_size=10)  # 2계층 신경망
-    network = MultiLayerNet(784, 10, hidden_size_list=[100, 100, 50, 100, 50], use_batchNorm=True, use_dropout=True, dropout_ratio=0.15)  # 다계층 신경망 // Hidden layer 동적 할당
+    network = MultiLayerNet(784, 10, hidden_size_list=[100, 100, 50], use_batchNorm=True, use_dropout=True, dropout_ratio=0.15)  # 다계층 신경망 // Hidden layer 동적 할당
 
     # optimizer = SGD(lr=0.01)   # 확률적 경사 하강법(SGD) Default Learning rate = 0.01
     # optimizer = Momentum()    # 모멘텀 // 기울기 방향으로 힘을 받아 물체가 가속된다는 물리 법칙
@@ -170,7 +170,13 @@ def train():
             test_acc_list.append(test_acc)
             print("train acc, test acc | " + str(train_acc) + ", " + str(test_acc))
 
+    # 하나의 값 예측
+    print(network.accuracy(x_test[[2]], t_test[[2]]))
+    return network
 
-# train()
-get_data()
+
+network = train()
+(x_train, t_train), (x_test, t_test) = get_data()
+
 # do()
+
