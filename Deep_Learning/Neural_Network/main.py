@@ -2,6 +2,7 @@ import sys, os
 sys.path.append(os.pardir) # 부모 디렉터리의 파일을 가져올 수 있도록 설정
 import time
 import numpy as np
+import pickle
 from PIL import Image
 from dataset.mnist import load_mnist, init_network
 from SimpleNeuralNetwork import predict
@@ -172,11 +173,33 @@ def train():
 
     # 하나의 값 예측
     print(network.accuracy(x_test[[2]], t_test[[2]]))
+
+    #학습 객체 저장
+    with open("./saveNetwork/FourLayersNetwork.pkl","wb") as file:
+        pickle.dump(network, file)
+        file.close()
+
     return network
+
+# 저장한 객체 불러오기
+def get_network():
+    with open("./saveNetwork/FourLayersNetwork.pkl","rb") as file:
+        network = pickle.load(file)
+
+        return network
+
+
+
 
 
 network = train()
+
 (x_train, t_train), (x_test, t_test) = get_data()
+network = get_network()
+print(network.accuracy(x_test[[6]], t_test[[6]]))
+
+# (x_train, t_train), (x_test, t_test) = get_data()
+
 
 # do()
 
