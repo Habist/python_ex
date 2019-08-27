@@ -181,6 +181,7 @@ def train():
 
     return network
 
+
 # 저장한 객체 불러오기
 def get_network():
     with open("./saveNetwork/FourLayersNetwork.pkl","rb") as file:
@@ -189,7 +190,11 @@ def get_network():
         return network
 
 
+def get_random_param():
+    weight_decay = 10 ** np.random.uniform(-8, -4)
+    lr = 10 ** np.random.uniform(-6, -2)
 
+    return weight_decay, lr
 
 
 network = train()
