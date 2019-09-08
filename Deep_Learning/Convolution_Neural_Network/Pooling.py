@@ -8,6 +8,9 @@ class Pooling:
         self.stride = stride
         self.pad = pad
 
+        self.x = None
+        self.arg_max = None
+
     def forward(self, x):
         N, C, H, W = x.shape
         out_h = int(1 + (H - self.pool_h) / self.stride)
@@ -16,8 +19,27 @@ class Pooling:
         col = im2col(x, self.pool_h, self.pool_w, self.stride, self.pad)
         col = col.reshape(-1, self.pool_h * self.pool_w)
 
+        arg_max = np.argmax(col, axis=1)
         out = np.max(col, axis=1)
 
         out = out.reshape(N, out_h, out_w, C).transpose(0, 3, 1, 2)
 
+        self.x = x
+        self.arg_max = arg_max
+
         return out
+
+    def backward(self, dout):
+        dout = dout.transpose(0, 2, 3, 1)
+
+        pool_size = self.pool_h * self.pool_w
+        dmax = np.zeros((dout.size, pool_size))
+        dmax[np.arange(self.arg_max.size), self.arg_max.flatten()] = dout.flatten()
+        dmax = dmax.reshape(dout.shape + (pool_size,))
+
+        dcol = dmax.reshape(dmax.shape[0] * dmax.shape[1] * dmax.shape[2], -1)
+        dx = col2im(dcol, self.x.shape, self.pool_h, self.pool_w, self.stride, self.pad)
+
+        return dx
+
+    
