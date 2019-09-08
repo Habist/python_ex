@@ -1,4 +1,5 @@
 from util import *
+import numpy as np
 
 
 class Convolution:
