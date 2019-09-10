@@ -6,6 +6,7 @@ import pickle
 from PIL import Image
 from dataset.mnist import load_mnist, init_network
 from SimpleNeuralNetwork import predict
+from SimpleConvNet import SimpleConvNet
 from TwoLayerNet import TwoLayerNet
 from Optimization import *
 from MultiLayerNet import MultiLayerNet
@@ -27,7 +28,8 @@ def shuffle_dataset(x, t):
 
 def get_data():
     (x_train, t_train), (x_test, t_test) = \
-        load_mnist(normalize=True, one_hot_label=True)  # 정규화 전처리 True
+        load_mnist(flatten=False, normalize=True, one_hot_label=False)
+        # load_mnist(normalize=True, one_hot_label=True)  # 정규화 전처리 True
         # load_mnist(flatten=True, normalize=True, one_hot_label=False) #정규화 전처리 True
     return (x_train, t_train), (x_test, t_test)
 
@@ -132,13 +134,17 @@ def train():
     test_acc_list = []
 
 
-    iters_num = 3000   # 반복 횟수
+    iters_num = 10000   # 반복 횟수
     train_size = x_train.shape[0]
     batch_size = 100
     learning_rate = 0.01
 
     # network = TwoLayerNet(input_size=784, hidden_size=50, output_size=10)  # 2계층 신경망
-    network = MultiLayerNet(784, 10, hidden_size_list=[100, 100, 50], use_batchNorm=True, use_dropout=True, dropout_ratio=0.15)  # 다계층 신경망 // Hidden layer 동적 할당
+    # network = MultiLayerNet(784, 10, hidden_size_list=[100, 100, 50], use_batchNorm=True, use_dropout=True, dropout_ratio=0.15)  # 다계층 신경망 // Hidden layer 동적 할당
+
+    network = SimpleConvNet(input_dim=(1, 28, 28),
+                            conv_param={'filter_num': 30, 'filter_size': 5, 'pad': 0, 'stride': 1},
+                            hidden_size=100, output_size=10, weight_init_std=0.01)
 
     # optimizer = SGD(lr=0.01)   # 확률적 경사 하강법(SGD) Default Learning rate = 0.01
     # optimizer = Momentum()    # 모멘텀 // 기울기 방향으로 힘을 받아 물체가 가속된다는 물리 법칙
@@ -172,7 +178,7 @@ def train():
             print("train acc, test acc | " + str(train_acc) + ", " + str(test_acc))
 
     # 하나의 값 예측
-    print(network.accuracy(x_test[[2]], t_test[[2]]))
+    # print(network.accuracy(x_test[[2]], t_test[[2]]))
 
     #학습 객체 저장
     with open("./saveNetwork/FourLayersNetwork.pkl","wb") as file:
@@ -199,9 +205,11 @@ def get_random_param():
 
 network = train()
 
-(x_train, t_train), (x_test, t_test) = get_data()
-network = get_network()
-print(network.accuracy(x_test[[6]], t_test[[6]]))
+### 저장 객체 불러오기 테스트 =====================
+# (x_train, t_train), (x_test, t_test) = get_data()
+# network = get_network()
+# print(network.accuracy(x_test[[6]], t_test[[6]]))
+### ===============================================
 
 # (x_train, t_train), (x_test, t_test) = get_data()
 
