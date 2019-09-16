@@ -1,3 +1,4 @@
+import pickle
 from Optimization import *
 
 
@@ -5,6 +6,7 @@ class Train:
     def __init__(self, get_data, network, iters_num = 5000,batch_size = 100,
                  learning_rate= 0.01, optimizer='Adam', optimizer_lr = 0.01, use_save = False):
         self.network = network
+        self.network_name = network.__class__.__name__
         (self.x_train, self.t_train), (self.x_test, self.t_test) = get_data()
         self.iters_num = iters_num
         self.batch_size = batch_size
@@ -44,3 +46,11 @@ class Train:
                 self.test_acc_list.append(test_acc)
                 print("train acc, test acc | " + str(train_acc) + ", " + str(test_acc))
 
+    def save_network(self):
+        with open("./saveNetwork/"+ self.network_name + ".pkl", "wb") as file:
+            pickle.dump(self.network, file)
+            file.close()
+
+    def load_network(self, file_name):
+        with open("./saveNetwork/" + file_name + ".pkl", "rb") as file:
+            self.network = pickle.load(file)
