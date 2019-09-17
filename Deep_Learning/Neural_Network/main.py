@@ -13,6 +13,9 @@ from Optimization import *
 from MultiLayerNet import MultiLayerNet
 
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
 def image_show(img):
     pil_image = Image.fromarray(np.uint8(img))
     pil_image.show()
@@ -143,7 +146,7 @@ def gradient_check():
 #     learning_rate = 0.01
 #
 #     # network = TwoLayerNet(input_size=784, hidden_size=50, output_size=10)  # 2계층 신경망
-#     # network = MultiLayerNet(784, 10, hidden_size_list=[100, 100, 50], use_batchNorm=True, use_dropout=True, dropout_ratio=0.15)  # 다계층 신경망 // Hidden layer 동적 할당
+#     # network = MultiLayerNet(784, 10, hidden_size_list=[100], use_batchNorm=True, use_dropout=True, dropout_ratio=0.15)  # 다계층 신경망 // Hidden layer 동적 할당
 #
 #     network = SimpleConvNet(input_dim=(1, 28, 28),
 #                             conv_param={'filter_num': 30, 'filter_size': 5, 'pad': 0, 'stride': 1},
@@ -192,11 +195,11 @@ def gradient_check():
 
 
 # 저장한 객체 불러오기
-def get_network():
-    with open("./saveNetwork/FourLayersNetwork.pkl","rb") as file:
-        network = pickle.load(file)
+def load_instance(file_name):
+    with open(BASE_DIR + "/Neural_Network/saveNetwork/"+file_name+".pkl","rb") as file:
+        save_instance = pickle.load(file)
 
-        return network
+        return save_instance
 
 
 def get_random_param():
@@ -208,11 +211,17 @@ def get_random_param():
 
 # network = train()
 
-train_class = Train(get_data = get_data, network= SimpleConvNet(input_dim=(1, 28, 28),
-                            conv_param={'filter_num': 30, 'filter_size': 5, 'pad': 0, 'stride': 1},
-                            hidden_size=100, output_size=10, weight_init_std=0.01))
+# train_class = Train(get_data = get_data, network= SimpleConvNet(input_dim=(1, 28, 28),
+#                             conv_param={'filter_num': 30, 'filter_size': 5, 'pad': 0, 'stride': 1},
+#                             hidden_size=100, output_size=10, weight_init_std=0.01))
 
-train_class.train_step()
+train_class = load_instance('train_class')
+
+# train_class.train_step()
+
+# with open(BASE_DIR + "/Neural_Network/saveNetwork/train_class.pkl", "wb") as file:
+#     pickle.dump(train_class, file)
+#     file.close()
 
 
 ### 저장 객체 불러오기 테스트 =====================
