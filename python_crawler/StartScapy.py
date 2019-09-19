@@ -8,13 +8,13 @@ from scapy.layers.l2 import *
 from scapy.layers.dot11 import *
 from scapy.utils import *
 from scapy.config import *
-
+import Deep_Learning
 
 
 idx = 0
 
 def sniffing(filter):
-    sniff(prn=showPacket, count=20)
+    sniff(prn=showPacket, count=5)
 
 def showPacket(packet):
     global idx

@@ -2,10 +2,15 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
-from Deep_Learning.Neural_Network.main import load_instance
-
+import pickle
 
 def main():
+    # train_instance = dl.load_instance('train_class')
+
+    with open("../Deep_Learning/Neural_Network/saveNetwork/train_class"+".pkl","rb") as file:
+        save_instance = pickle.load(file)
+    print(save_instance.__class__.__name__)
+    print("load success")
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'HabiWeb.settings')
     try:
         from django.core.management import execute_from_command_line
@@ -17,8 +22,6 @@ def main():
 
         ) from exc
     execute_from_command_line(sys.argv)
-    train_instance = load_instance('train_class')
-    print("load success")
     # train_instance.train_step()
 
 
