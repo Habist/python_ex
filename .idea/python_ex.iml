@@ -3,26 +3,21 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Deep_Learning" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/python_crawler" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/python_elastic" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Deep_Learning/Neural_Network" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Deep_Learning/Perceptron_Algorithm" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/python_elastic/python_elastic" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Deep_Learning/dataset" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Deep_Learning/Tensorflow" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Deep_Learning/Neural_Network/saveNetwork" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Deep_Learning/Convolution_Neural_Network" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Deep_Learning" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Deep_Learning/Neural_Network" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/WebApplication" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/WebApplication/HabiWeb" isTestSource="false" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.6 (python_ex)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-  </component>
-  <component name="TemplatesService">
-    <option name="TEMPLATE_FOLDERS">
-      <list>
-        <option value="$MODULE_DIR$/WebApplication/templates" />
-      </list>
-    </option>
   </component>
   <component name="TestRunnerService">
     <option name="PROJECT_TEST_RUNNER" value="Unittests" />
