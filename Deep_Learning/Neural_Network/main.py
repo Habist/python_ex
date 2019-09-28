@@ -215,7 +215,10 @@ def get_random_param():
 #                             conv_param={'filter_num': 30, 'filter_size': 5, 'pad': 0, 'stride': 1},
 #                             hidden_size=100, output_size=10, weight_init_std=0.01))
 
-train_class = load_instance('train_class')
+# train_class = load_instance('train_class')
+
+# for i in range(10000):
+#     train_class.predict(i)
 
 # train_class.train_step()
 

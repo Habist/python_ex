@@ -1,6 +1,9 @@
 import datetime
 from django.db import models
 from django.utils import timezone
+from Deep_Learning.Neural_Network import main as cnn
+
+
 # Create your models here.
 
 
@@ -24,3 +27,8 @@ class Choice(models.Model):
         return self.choice_text
 
 
+class ConvNeuralNetwork(models.Model):
+    train_class = cnn.load_instance('train_class')
+
+    def __str__(self):
+        return 'test_ver 1.0'

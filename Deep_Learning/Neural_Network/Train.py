@@ -54,3 +54,14 @@ class Train:
     def load_network(self, file_name):
         with open("./saveNetwork/" + file_name + ".pkl", "rb") as file:
             self.network = pickle.load(file)
+
+    def predict(self,idx):
+        y = self.network.predict(self.x_test[[idx]])
+        y = np.argmax(y, axis=1)
+        if y == self.t_test[[idx]]:
+            print('정답')
+        else:
+            print('오답')
+        print('예측 결과 : ' + y[0].__str__())
+        print('실제 답 : ' + self.t_test[[idx]][0].__str__())
+

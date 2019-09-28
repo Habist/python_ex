@@ -3,7 +3,7 @@ from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
 from django.template import loader
-from .models import Choice, Question
+from .models import Choice, Question, ConvNeuralNetwork
 
 # Create your views here.
 
@@ -38,7 +38,8 @@ class ResultsView(generic.DetailView):
 #     context = {'latest_question_list': latest_question_list}
 #     return render(request, 'polls/index.html', context)
 
-def test(request):
+def test(request, idx):
+    ConvNeuralNetwork.train_class.predict(idx)
     return HttpResponse("test!!")
 
 
