@@ -1,0 +1,113 @@
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+         // document.body.style.backgroundColor = "red";
+         var DrawingTool = {
+            canvas   : null,
+            context  : null,
+            drawX    : [],
+            drawY    : [],
+            drawDrag : [],
+            drawColor: [],
+            isDraw   : false,
+            colorTable : [
+                "#000000",
+                "#ff0000",
+                "#0000ff",
+                "#ffff00",
+                "#cb3594",
+                "#986828"
+            ]
+        };
+
+            DrawingTool.init = function() {
+                var self = this;
+                var offset = $("#canvas").offset();
+                this.canvas = document.getElementById("canvas");
+                this.context = this.canvas.getContext("2d");
+
+                $("#canvas").mousedown(function(event) {
+                    self.isDraw = true;
+                    self.addDraw(event.pageX - offset.left, event.pageY - offset.top);
+                    self.reDraw();
+                });
+
+                $("#canvas").mousemove(function(event) {
+                    if(self.isDraw) {
+                        self.addDraw(event.pageX - offset.left, event.pageY - offset.top, true);
+                        self.reDraw();
+                    }
+                });
+
+                $("#canvas").bind("mouseup mouseleave", function(event) {
+                    self.isDraw = false;
+                });
+
+                this.setColorButton();
+                this.setResetButton();
+            };
+
+            DrawingTool.addDraw = function(x, y, drawing) {
+                this.drawX.push(x);
+                this.drawY.push(y);
+                this.drawDrag.push(drawing);
+                this.drawColor.push(this.selectedColor || this.colorTable[0]);
+            };
+
+            DrawingTool.reDraw = function() {
+                this.context.lineJoin = "round";
+                this.context.lineWidth = 5;
+
+                for(var i = 0; i < this.drawX.length; i ++) {
+                    this.context.beginPath();
+                    if(this.drawDrag[i] && i) {
+                        this.context.moveTo(this.drawX[i - 1], this.drawY[i - 1]);
+                    } else {
+                        this.context.moveTo(this.drawX[i] - 1, this.drawY[i]);
+                    }
+
+                    this.context.lineTo(this.drawX[i], this.drawY[i]);
+                    this.context.closePath();
+                    this.context.strokeStyle = this.drawColor[i];
+                    this.context.stroke();
+                }
+            };
+
+            DrawingTool.setColorButton = function() {
+                var self = this;
+                $("#color > button").on("click", function(event) {
+                    self.selectedColor = self.colorTable[$(this).index()];
+                });
+            };
+
+            DrawingTool.setResetButton = function() {
+                var self = this;
+                $("#reset").on("click", function(event) {
+                    self.canvas.width = self.canvas.width;
+                    self.drawX = [], self.drawY = [], self.drawDrag = [], self.drawColor = [];
+                });
+            };
+
+
+        DrawingTool.init();
+        });
+    </script>
+</head>
+
+<div id="tools">
+    <p><button id="reset">RESET</button></p>
+    <p id="color">
+        <button>BLACK</button>
+        <button>RED</button>
+        <button>BLUE</button>
+        <button>YELLOW</button>
+        <button>PURPLE</button>
+        <button>BROWN</button>
+    </p>
+</div>
+<canvas id="canvas" width="500" height="500"></canvas>
+
+<style>
+    #canvas { border: 1px solid #000; }
+</style>
