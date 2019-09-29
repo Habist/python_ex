@@ -57,7 +57,7 @@
 
             DrawingTool.reDraw = function() {
                 this.context.lineJoin = "round";
-                this.context.lineWidth = 5;
+                this.context.lineWidth = 2;
 
                 for(var i = 0; i < this.drawX.length; i ++) {
                     this.context.beginPath();
@@ -91,12 +91,37 @@
 
 
         DrawingTool.init();
+
+        $('#send').click(function(){
+            var image = DrawingTool.context.getImageData(0,0,28,28).data;
+            var red = [];
+            var green = [];
+            var blue = [];
+            var alpha = [];
+            for(var i=0; i<image.length; i+=4){
+                red.push(image[i+0])
+                green.push(image[i+1])
+                blue.push(image[i+2])
+                alpha.push(image[i+3])
+            }
+            $.ajax({
+                type: "POST",
+                url: "{% url 'polls:send' %}",
+                data: {'image': JSON.stringify(alpha),'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                dataType: "json"
+                }).done(function(data){
+                console.info(data.status)
+            });
+        });
         });
     </script>
 </head>
 
 <div id="tools">
-    <p><button id="reset">RESET</button></p>
+    <p>
+        <button id="reset">RESET</button>
+        <button id="send">SEND</button>
+    </p>
     <p id="color">
         <button>BLACK</button>
         <button>RED</button>
@@ -106,7 +131,7 @@
         <button>BROWN</button>
     </p>
 </div>
-<canvas id="canvas" width="500" height="500"></canvas>
+<canvas id="canvas" width="28" height="28"></canvas>
 
 <style>
     #canvas { border: 1px solid #000; }

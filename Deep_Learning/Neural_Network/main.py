@@ -216,7 +216,7 @@ def get_random_param():
 #                             hidden_size=100, output_size=10, weight_init_std=0.01))
 
 # train_class = load_instance('train_class')
-
+# # train_class.predict(5)
 # for i in range(10000):
 #     train_class.predict(i)
 

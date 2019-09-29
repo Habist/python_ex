@@ -55,13 +55,24 @@ class Train:
         with open("./saveNetwork/" + file_name + ".pkl", "rb") as file:
             self.network = pickle.load(file)
 
-    def predict(self,idx):
-        y = self.network.predict(self.x_test[[idx]])
-        y = np.argmax(y, axis=1)
-        if y == self.t_test[[idx]]:
-            print('정답')
-        else:
-            print('오답')
-        print('예측 결과 : ' + y[0].__str__())
-        print('실제 답 : ' + self.t_test[[idx]][0].__str__())
+    # def predict(self,idx, x):
+    #     y = self.network.predict(self.x_test[[idx]])
+    #     y = np.argmax(y, axis=1)
+    #     print(self.x_test[[idx]].shape)
+    #     if y == self.t_test[[idx]]:
+    #         print('정답')
+    #     else:
+    #         print('오답')
+    #     print('예측 결과 : ' + y[0].__str__())
+    #     print('실제 답 : ' + self.t_test[[idx]][0].__str__())
 
+    def predict(self, x):
+        y = self.network.predict(x)
+        c = np.min(y)
+        y = y + abs(c)
+        acc = (y / np.sum(y)) * 100
+        for i in range(acc.shape[1]):
+            print(round(acc[0][i], 2).__str__() + '% 확률로 ' + i.__str__() + ' 입니다.')
+        y = np.argmax(y)
+        print('예측 결과 : ' + y.__str__())
+        print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')

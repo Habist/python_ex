@@ -9,7 +9,8 @@ urlpatterns = [
     # path('', views.index, name='index'),
 
     path('', views.IndexView.as_view(), name='index'),
-    path('test/<int:idx>', views.test, name='test'),
+    path('test/', views.test, name='test'),
+    path('send/',views.send, name='send'),
     path('<int:pk>/', views.DetailView.as_view(), name='detail'),
     path('<int:pk>/results/', views.ResultsView.as_view(), name='results'),
 

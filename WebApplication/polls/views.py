@@ -4,6 +4,8 @@ from django.urls import reverse
 from django.views import generic
 from django.template import loader
 from .models import Choice, Question, ConvNeuralNetwork
+import numpy as np
+import json
 
 # Create your views here.
 
@@ -38,9 +40,24 @@ class ResultsView(generic.DetailView):
 #     context = {'latest_question_list': latest_question_list}
 #     return render(request, 'polls/index.html', context)
 
-def test(request, idx):
-    ConvNeuralNetwork.train_class.predict(idx)
-    return HttpResponse("test!!")
+def test(request):
+    # idx = 5
+    # ConvNeuralNetwork.train_class.predict(idx)
+    return render(request, 'polls/test.html', {})
+
+
+def send(request):
+    print('send@@@@@@@@@@')
+    arr = json.loads(request.POST['image'])
+    np_arr = np.array(arr)
+    np_arr = np_arr.astype(np.float32)
+    np_arr /= 255.0
+    np_arr = np_arr.reshape(1,1,28,28)
+    ConvNeuralNetwork.train_class.predict(np_arr)
+    context = {
+        'status' : 'success'
+    }
+    return HttpResponse(json.dumps(context), content_type="application/json")
 
 
 # def detail(request, question_id):
