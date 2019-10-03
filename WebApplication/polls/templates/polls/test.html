@@ -1,6 +1,7 @@
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script type="text/javascript">
+
         $(document).ready(function(){
          // document.body.style.backgroundColor = "red";
          var DrawingTool = {
@@ -57,7 +58,7 @@
 
             DrawingTool.reDraw = function() {
                 this.context.lineJoin = "round";
-                this.context.lineWidth = 2;
+                this.context.lineWidth = 11;
 
                 for(var i = 0; i < this.drawX.length; i ++) {
                     this.context.beginPath();
@@ -93,16 +94,29 @@
         DrawingTool.init();
 
         $('#send').click(function(){
-            var image = DrawingTool.context.getImageData(0,0,28,28).data;
+            var img = new Image();
+            img.onload = function() {
+                var re_canvas = document.createElement('canvas');
+                var re_context = re_canvas.getContext("2d");
+                re_canvas.width = img.width;
+                re_canvas.height = img.height;
+                re_context.drawImage(img, 0,0, img.width, img.height, 0,0, 28, 28);
+                sendData(re_context);
+            }
+            img.src = DrawingTool.canvas.toDataURL('image/png', 1.0);
+        });
+        });
+        var sendData = function(re_context) {
+            var imgArr = re_context.getImageData(0,0,28,28).data;
             var red = [];
             var green = [];
             var blue = [];
             var alpha = [];
-            for(var i=0; i<image.length; i+=4){
-                red.push(image[i+0])
-                green.push(image[i+1])
-                blue.push(image[i+2])
-                alpha.push(image[i+3])
+            for(var i=0; i<imgArr.length; i+=4){
+                red.push(imgArr[i+0])
+                green.push(imgArr[i+1])
+                blue.push(imgArr[i+2])
+                alpha.push(imgArr[i+3])
             }
             $.ajax({
                 type: "POST",
@@ -112,8 +126,7 @@
                 }).done(function(data){
                 console.info(data.status)
             });
-        });
-        });
+        }
     </script>
 </head>
 
@@ -131,7 +144,7 @@
         <button>BROWN</button>
     </p>
 </div>
-<canvas id="canvas" width="28" height="28"></canvas>
+<canvas id="canvas" width="300" height="300"></canvas>
 
 <style>
     #canvas { border: 1px solid #000; }

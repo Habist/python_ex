@@ -71,8 +71,8 @@ class Train:
         c = np.min(y)
         y = y + abs(c)
         acc = (y / np.sum(y)) * 100
-        for i in range(acc.shape[1]):
-            print(round(acc[0][i], 2).__str__() + '% 확률로 ' + i.__str__() + ' 입니다.')
+        # for i in range(acc.shape[1]):
+        #     print(round(acc[0][i], 2).__str__() + '% 확률로 ' + i.__str__() + ' 입니다.')
         y = np.argmax(y)
         print('예측 결과 : ' + y.__str__())
         print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
